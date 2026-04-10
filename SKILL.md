@@ -1,6 +1,12 @@
 ---
 name: financial-model
-description: "VC-grade 재무모델 빌더. 가정→산출→시나리오 구조의 xlsx + 방법론 md 생성. 재무모델·매출추정·시나리오분석 요청시 자동발동."
+description: |
+  VC-grade 재무모델 빌더. 가정→산출→시나리오 구조의 xlsx + 방법론 md 생성. 재무모델·매출추정·시나리오분석 요청시 자동발동.
+  P1: 재무모델, financial model, 매출추정, revenue projection, unit economics, 시나리오분석.
+  P2: 만들어줘, 추정해줘, build, create.
+  P3: financial modeling, revenue projection, scenario analysis.
+  P5: .xlsx로, .md로, 스프레드시트로.
+  NOT: 회계장부(→xlsx스킬직접).
 "@uses":
   - references/kpi-formulas.py
 ---
@@ -169,9 +175,6 @@ v1.0 | [날짜]
 | 가정 | MRR/ARR 워터폴 (New+Expansion-Contraction-Churn), 코호트별 이탈률, 업셀비율 |
 | KPI | ARR 워터폴, Quick Ratio (New+Expansion)/(Contraction+Churn), Magic Number |
 | Revenue | MRR 코호트 빌드업 → ARR 환산 |
-
-<!-- 🥚 시나리오 3개 중 "낙관"이 사실은 "현실"이길 매번 기도한다. — N.C. -->
-
 
 ### `marketplace`
 
