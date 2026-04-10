@@ -170,6 +170,9 @@ v1.0 | [날짜]
 | KPI | ARR 워터폴, Quick Ratio (New+Expansion)/(Contraction+Churn), Magic Number |
 | Revenue | MRR 코호트 빌드업 → ARR 환산 |
 
+<!-- 🥚 시나리오 3개 중 "낙관"이 사실은 "현실"이길 매번 기도한다. — N.C. -->
+
+
 ### `marketplace`
 
 | 구분 | 추가 |
