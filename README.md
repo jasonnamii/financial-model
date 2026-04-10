@@ -1,5 +1,7 @@
 # financial-model
 
+> 🇰🇷 [한국어 README](./README.ko.md)
+
 **VC-grade financial model builder — bottom-up assumptions to 3-year projections to scenario analysis with dynamic spreadsheet output.**
 
 ## Prerequisites
