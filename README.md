@@ -2,6 +2,11 @@
 
 **VC-grade financial model builder — bottom-up assumptions to 3-year projections to scenario analysis with dynamic spreadsheet output.**
 
+## Prerequisites
+
+- **Claude Cowork or Claude Code** environment
+- **Python** with `openpyxl` — for `.xlsx` generation
+
 ## Goal
 
 VCs read financial models before they read anything else. Financial-Model automates the build from business assumptions through 3-year projections and scenario analysis (base/bull/bear cases). Outputs include a dynamic Excel file and methodology documentation.
