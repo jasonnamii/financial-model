@@ -110,27 +110,30 @@ NOT: 회계장부(→xlsx스킬직접)
 
 ### 생성 후 필수
 
-**① 구조 검증 (`recalc.py`)** — openpyxl 기반, 6축 전수 감사:
+**검증 통합:** recalc.py에 단위정합 체크 통합 (구조6축 + 단위). formula_audit.py는 수식 10행 초과 모델에서만 실행. 10행 이하 → recalc.py 1회로 검증 완료.
+
+구체적으로:
+- **① 구조 검증 (`recalc.py`)** — openpyxl 기반, 6축 전수 감사 + 단위 정합:
 ```bash
 python scripts/recalc.py output.xlsx          # 콘솔 출력
 python scripts/recalc.py output.xlsx --json   # JSON 출력
 ```
-- 수식 셀 전수 탐지 + 탭간 참조 정합성
-- 하드코딩 감지 (Assumptions 탭 외 숫자 직입력 → 에러)
-- 색상규약 검증 (파랑=입력, 검정=수식, 초록=시트간링크)
-- 단방향 흐름 위반 감지 (input→calc→output 역참조 → 에러)
-- 시나리오 스위치 셀 존재 확인
+  - 수식 셀 전수 탐지 + 탭간 참조 정합성
+  - 하드코딩 감지 (Assumptions 탭 외 숫자 직입력 → 에러)
+  - 색상규약 검증 (파랑=입력, 검정=수식, 초록=시트간링크)
+  - 단방향 흐름 위반 감지 (input→calc→output 역참조 → 에러)
+  - 시나리오 스위치 셀 존재 확인
+  - **단위 정합 체크 통합:** 월/연 단위 혼용, 환산 누락 감지
 
-**② 수식 심볼릭 검증 (`formula_audit.py`)** — sympy + openpyxl 기반:
+- **② 수식 심볼릭 검증 (`formula_audit.py`)** — sympy + openpyxl 기반 (수식 10행 초과 모델만):
 ```bash
 python scripts/formula_audit.py audit output.xlsx          # 전체 감사
 python scripts/formula_audit.py audit output.xlsx --json   # JSON 출력
 python scripts/formula_audit.py verify LTV "arpu * gross_margin / monthly_churn"  # KPI 등가성
 ```
-- 순환참조 감지 (DFS 기반)
-- 월/연 단위 혼용 감지 (×12 변환 누락 시 경고)
-- 수식 종속성 그래프 + 시트별 수식 수 집계
-- KPI 수식 심볼릭 등가성: 10개 정준 수식(LTV, CAC, LTV/CAC, CAC_Payback, Burn_Multiple, Rule_of_40, Runway, NRR, Quick_Ratio, Net_New_MRR) 대비 검증
+  - 순환참조 감지 (DFS 기반)
+  - 수식 종속성 그래프 + 시트별 수식 수 집계
+  - KPI 수식 심볼릭 등가성: 10개 정준 수식(LTV, CAC, LTV/CAC, CAC_Payback, Burn_Multiple, Rule_of_40, Runway, NRR, Quick_Ratio, Net_New_MRR) 대비 검증
 
 **의존성:** `pip install openpyxl sympy`
 
