@@ -1,26 +1,29 @@
 ---
 name: financial-model
-description: |
-  VC-grade 재무모델 빌더. 가정→산출→시나리오 구조의 xlsx + 방법론 md 생성. 재무모델·매출추정·시나리오분석 요청시 자동발동.
-  P1: 재무모델, financial model, 매출추정, revenue projection, unit economics, 시나리오분석.
-  P2: 만들어줘, 추정해줘, build, create.
-  P3: financial modeling, revenue projection, scenario analysis.
-  P5: .xlsx로, .md로, 스프레드시트로.
-  NOT: 회계장부(→xlsx스킬직접).
+description: "VC-grade 재무모델 빌더. 가정→산출→시나리오 구조의 xlsx + 방법론 md 생성. 재무모델·매출추정·시나리오분석 요청시 자동발동. 일반/TURBO(시나리오 3종·탭·감도매트릭스 병렬 Agent) 2모드. P1: 재무모델, financial model, 매출추정, revenue projection, unit economics, 시나리오분석, 터보재무모델, 재무모델 터보, TURBO. P2: 만들어줘, 추정해줘, 터보로 만들어줘, build, create, turbo model. P3: financial modeling, revenue projection, scenario analysis, turbo model, parallel scenario. P5: .xlsx로, .md로, 스프레드시트로. NOT: 회계장부(→xlsx스킬직접)."
 "@uses":
   - references/kpi-formulas.py
 ---
 
-<!-- Trigger Conditions (moved from description for token compression)
-P1: 재무모델, financial model, 매출추정, revenue projection, unit economics, 시나리오분석.
-P4: 재무모델·매출추정·시나리오분석 요청시 자동발동(형 호출 불요). 미발동=실패.
-P5: .xlsx로, .md로, 스프레드시트로.
-NOT: 회계장부(→xlsx스킬직접)
--->
 
 # Financial Model Builder
 
 가정 기반 동적 재무모델. Bottom-Up 5~15개 핵심가정 → 3개년+ 추정 → 시나리오 분석.
+
+---
+
+---
+
+## ⛔ 절대 규칙
+
+| # | 규칙 |
+|---|------|
+| 1 | 발동 조건 외 임의 실행 금지 |
+| 2 | 출력 형식 준수 — 내부 라벨 사용자 노출 금지 |
+| 3 | UP 존댓말·호칭 규칙 우선 적용 |
+
+### 자체 점검 (self-check)
+SKILL.md ≤10KB · P1 ≥5개 · Gotchas 존재 확인 후 수정 완료.
 
 ---
 
@@ -222,6 +225,48 @@ v1.0 | [날짜]
 - 산술 = Python 필수 (#11~13). LLM 눈 검산 금지.
 - xlsx 생성 후 `recalc.py` 필수. 에러 0 확인까지 반복.
 - 외부 벤치마크 인용 시 출처·시점 명시. 미확인 수치 확신도 50 이하.
+
+---
+
+## TURBO 모드 — 고품질 병렬 가속화
+
+**목적:** 재무모델 구축 시간 단축. 가정 품질·단방향 흐름·색상규약·recalc.py/formula_audit.py 검증 불변, Phase 3 탭·시나리오·감도·Phase 4 가이드 드래프트만 Agent 분산.
+
+**트리거:** "터보로 재무모델" · "TURBO" · "재무모델 터보" 명시. 미명시 = 일반.
+
+**원칙 (4):**
+1. **병렬화만, 스킵 금지** — Phase 1 가정설계·Phase 2 탭 설계·검증(recalc·formula_audit) 불변
+2. **독립성 확인** — Assumptions 고정 후 탭·시나리오는 독립 계산 가능
+3. **통합 시퀀셜** — xlsx 최종 조립·탭간 참조 무결성·순환참조 검증은 메인
+4. **Agent 브리프 완결성** — Assumptions 전체·수식 원칙(동적 연결·하드코딩 금지)·색상규약·정준 수식(LTV·CAC 등 10개) 전달
+
+**병렬 타겟:**
+- Phase 3 탭별 수식 드래프트 — Revenue/Costs/P&L/Cash Flow 각 Agent (Assumptions 고정 후)
+- 시나리오 3개(Base/Bull/Bear) 가정 조정·재계산 드래프트 — 시나리오별 Agent
+- 감도분석 2×3~5 매트릭스 — 축별 Agent
+- Phase 4 md 가이드 섹션별 드래프트 — 섹션별 Agent
+
+**병렬 제외 (시퀀셜):**
+- Phase 1 가정설계 (모델 전체 뼈대, 핵심/파생/운영 가정 일관성)
+- Phase 2 탭 설계·단방향 흐름 규약 확정
+- xlsx 최종 조립·탭간 참조 연결·시나리오 스위치 구현
+- recalc.py 6축 감사·단위 정합 (하드코딩·역참조·색상 위반)
+- formula_audit.py 순환참조·심볼릭 등가성 (수식 10행 초과 시)
+- VC 체크리스트 자가점검
+
+**품질 저하 방어:**
+- 탭간 참조 단절(Assumptions→Revenue/Costs) 감지 → 재연결
+- 단위 혼용(월/연·개월/년) 감지 → 해당 수식 시퀀셜 재작성
+- Bear 시나리오 낙관성·Burn Multiple/Runway 누락 감지 → 재조정
+- recalc.py 에러 0건 아니면 납품 차단 (병렬 결과 무효)
+
+**예상 단축:** 40~55% (탭 수·시나리오 수·감도 축 수에 비례)
+
+---
+
+## 예시
+
+발동 후 스킬 프로토콜에 따라 단계별 실행 → 산출물 생성.
 
 ---
 
